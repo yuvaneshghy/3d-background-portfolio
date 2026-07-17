@@ -206,6 +206,86 @@ document.querySelectorAll('.card').forEach((card) => {
 /* ---------- Year ---------- */
 document.getElementById('year').textContent = new Date().getFullYear();
 
+/* ---------- Work category filter ---------- */
+(function () {
+  const bar = document.getElementById('work-filters');
+  const subBar = document.getElementById('work-subfilters');
+  const grid = document.getElementById('work-grid');
+  if (!bar || !grid) return;
+  const cards = grid.querySelectorAll('.card');
+  let activeType = 'graphic';
+  let activeSub = 'all';
+
+  function defaultSub(type) {
+    return type === 'video' ? 'reels' : 'idc';
+  }
+
+  function apply() {
+    let i = 0;
+    cards.forEach((card) => {
+      const typeOk = card.dataset.type === activeType;
+      const subOk = activeSub === 'all' || card.dataset.category === activeSub;
+      const show = typeOk && subOk;
+      card.classList.toggle('hide', !show);
+      if (show) {
+        card.classList.remove('animate-in');
+        void card.offsetWidth;
+        card.style.animationDelay = (i * 0.06) + 's';
+        card.classList.add('animate-in');
+        i++;
+      }
+    });
+  }
+
+  function syncSubs() {
+    if (!subBar) return;
+    subBar.classList.add('open');
+    const def = defaultSub(activeType);
+    let i = 0;
+    subBar.querySelectorAll('.filter-btn').forEach((b) => {
+      const match = b.dataset.type === activeType;
+      b.classList.toggle('hide', !match);
+      b.classList.toggle('active', match && b.dataset.filter === def);
+      if (match) {
+        b.style.animationDelay = (i * 0.06) + 's';
+        i++;
+      }
+    });
+    activeSub = def;
+  }
+
+  syncSubs();
+  apply();
+
+  bar.addEventListener('click', (e) => {
+    const btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+    activeType = btn.dataset.type;
+    bar.querySelectorAll('.filter-btn').forEach((b) => b.classList.toggle('active', b === btn));
+    subBar.classList.remove('open');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        syncSubs();
+        apply();
+      });
+    });
+  });
+
+  if (subBar) {
+    subBar.addEventListener('click', (e) => {
+      const btn = e.target.closest('.filter-btn');
+      if (!btn) return;
+      activeSub = btn.dataset.filter;
+      subBar.querySelectorAll('.filter-btn').forEach((b) => {
+        if (b.dataset.type === activeType) b.classList.toggle('active', b === btn);
+      });
+      apply();
+    });
+  }
+
+  apply();
+})();
+
 /* ---------- Project category filter ---------- */
 (function () {
   const bar = document.getElementById('project-filters');
