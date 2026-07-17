@@ -37,20 +37,6 @@
   const points = new THREE.Points(pGeo, pMat);
   scene.add(points);
 
-  /* --- Company Logo as 3D Element --- */
-  const loader = new THREE.TextureLoader();
-  const logoTexture = loader.load('logo.png');
-  const logoGeo = new THREE.PlaneGeometry(10, 10);
-  const logoMat = new THREE.MeshBasicMaterial({ map: logoTexture, transparent: true, depthWrite: false, side: THREE.DoubleSide, opacity: 0.9 });
-  const logoMesh = new THREE.Mesh(logoGeo, logoMat);
-  scene.add(logoMesh);
-
-  const glowGeo = new THREE.PlaneGeometry(12, 12);
-  const glowMat = new THREE.MeshBasicMaterial({ color: 0x6c5ce7, transparent: true, opacity: 0.04, side: THREE.DoubleSide, depthWrite: false });
-  const glowMesh = new THREE.Mesh(glowGeo, glowMat);
-  glowMesh.position.z = -0.3;
-  scene.add(glowMesh);
-
   const ringGeo = new THREE.IcosahedronGeometry(6.5, 1);
   const ringMat = new THREE.MeshBasicMaterial({ color: 0x6c5ce7, wireframe: true, transparent: true, opacity: 0.12 });
   const ring = new THREE.Mesh(ringGeo, ringMat);
@@ -73,12 +59,6 @@
     requestAnimationFrame(animate);
     const t = clock.getElapsedTime();
 
-    logoMesh.rotation.x = Math.sin(t * 0.2) * 0.08;
-    logoMesh.rotation.y = Math.sin(t * 0.15) * 0.1;
-    logoMesh.position.y = Math.sin(t * 0.3) * 0.3;
-    glowMesh.rotation.x = logoMesh.rotation.x;
-    glowMesh.rotation.y = logoMesh.rotation.y;
-    glowMesh.position.y = logoMesh.position.y;
     ring.rotation.x = t * 0.12;
     ring.rotation.y = t * 0.18;
     ring2.rotation.x = -t * 0.22;
